@@ -21,9 +21,10 @@ int Gx(Mat imageData, int x, int y)
 	//return the value
 	return gx;
 }
+
 int Gy(Mat imageData, int x, int y)
 {
-	//get the Gy value with cconvolution applying the matrix [+1,+2,+1;0,0,0;+1,-1,+1]
+	//get the Gy value with convolution applying the matrix [+1,+2,+1;0,0,0;+1,-1,+1]
 	int gy = imageData.at<uchar>(y - 1, x - 1) +
 		2 * imageData.at<uchar>(y - 1, x) +
 		imageData.at<uchar>(y - 1, x + 1) -
@@ -31,7 +32,7 @@ int Gy(Mat imageData, int x, int y)
 		2 * imageData.at<uchar>(y + 1, x) -
 		imageData.at<uchar>(y + 1, x + 1);
 
-	//return teh value
+	//return the value
 	return gy;
 }
 
@@ -42,8 +43,11 @@ int main()
 	double startTime, endTime;
 	int gx, gy, g;
 
+	//the entire path of the image
+	String imagePath = "C:/Users/xavi.portilla/Desktop/sobel/sobel_copia.png";
+
 	//get the image
-	sourceImage = imread("C:/Users/xavi.portilla/Desktop/sobel/sobel_copia.png");
+	sourceImage = imread(imagePath);
 
 	//transform the RGB pixel matrix into grayScale matrix to get a better result
 	cvtColor(sourceImage, greyImage, CV_BGR2GRAY);
@@ -58,7 +62,7 @@ int main()
 		return -1;
 	}
 
-	//intialize the outputMAtrix to 0
+	//intialize the outputMatrix to 0
 	#pragma omp parallel for  
 	for (int y = 0; y < greyImage.rows; y++)
 		for (int x = 0; x < greyImage.cols; x++)
@@ -73,7 +77,7 @@ int main()
 		for (int x = 1; x < greyImage.cols - 1; x++) {
 			//convolution of the kernel with matrix [-1, 0, 1; -2, 0, 2; -1, 0, 1] in order to obtain Gx
 			gx = Gx(greyImage, x, y);
-			//sconvolution of the kernel with matrix [-1, -2, -1; 0, 0, 0; 1, 2, 1] in order to obtain Gy
+			//convolution of the kernel with matrix [-1, -2, -1; 0, 0, 0; 1, 2, 1] in order to obtain Gy
 			gy = Gy(greyImage, x, y);
 
 			//to obtain G we have to calculate the square root of the Gx squared + Gy squared 	
@@ -97,7 +101,7 @@ int main()
 	//show the time of the algorithm
 	cout << "Time of the algorithm: " << (endTime - startTime) << " s." << endl;
 
-	//waitint the user until he press a key to end the execution
+	//waiting the user until he presses a key to end the execution
 	waitKey();
 
 	//return no errors
